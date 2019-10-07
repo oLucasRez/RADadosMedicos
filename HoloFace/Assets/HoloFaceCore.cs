@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using FaceProcessing;
 using UnityEngine.Windows.Speech;
+using UnityEngine.XR.WSA.Input;
 
 #if WINDOWS_UWP
 using System.Threading.Tasks;
@@ -40,7 +41,8 @@ public class HoloFaceCore : MonoBehaviour
     bool showDebug = false;
     bool useBackendManager = false;
     bool backendConnected = false;
-    
+
+    private GestureRecognizer gestureRecognizer;
 
     int frameReportPeriod = 10;
     int frameCounter = 0;
@@ -57,12 +59,14 @@ public class HoloFaceCore : MonoBehaviour
         localFaceTracker = new LocalFaceTracker(LocalTrackerNumberOfIters, LocalTrackerConfidenceThreshold);
         backendFaceTracker = new BackendFaceTracker(nLandmarks, BackendTrackerConfidenceThreshold, 43002, localFaceTracker);
 
+        gestureRecognizer.TappedEvent += ChangeDebug;
+
         if (PhraseRecognitionSystem.isSupported)
         {
             keywordCollection = new Dictionary<string, KeywordAction>();
 
-            keywordCollection.Add("Show debug", ShowDebug);
-            keywordCollection.Add("Hide debug", HideDebug);
+            //keywordCollection.Add("Show debug", ShowDebug);
+            //keywordCollection.Add("Hide debug", HideDebug);
             keywordCollection.Add("Computer", BackendProcessing);
             keywordCollection.Add("Local", LocalProcessing);
             keywordCollection.Add("Show face", ShowFace);
@@ -74,6 +78,12 @@ public class HoloFaceCore : MonoBehaviour
         }
         if (FPSText != null)
             FPSText.text = "";
+    }
+
+    void ChangeDebug(InteractionSourceKind source, int tapCount, Ray headRay)
+    {
+        if (showDebug) HideDebug();
+        else ShowDebug();
     }
 
 #if WINDOWS_UWP
@@ -187,7 +197,7 @@ public class HoloFaceCore : MonoBehaviour
             faceRenderer.ResetFitter();
         }
         faceRenderer.UpdateHeadPose(landmarks, webcamToWorldTransform);
-        itemManager.ProcessFaceExpressions(faceRenderer.BlendshapeWeights);
+        //itemManager.ProcessFaceExpressions(faceRenderer.BlendshapeWeights);
     }
 
     private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
