@@ -581,7 +581,7 @@ PlayerSettings:
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
-  metroCertificateNotAfter: 803a205f21b6d301
+  metroCertificateNotAfter: 00324c7e399cd601
   metroApplicationDescription: FaceSwapHL
   wsaImages: {}
   metroTileShortName: 
