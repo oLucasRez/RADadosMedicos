@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.WSA.WebCam;
-
 using System.Linq;
 
 #if WINDOWS_UWP
@@ -16,6 +15,7 @@ using HoloLensForCV;
 
 public class HololensCameraUWP : MonoBehaviour
 {
+    //ATRIBUTOS::
     bool webcamInitialized = false;
     bool imageInitialized = false;
 
@@ -27,18 +27,14 @@ public class HololensCameraUWP : MonoBehaviour
 
     DateTimeOffset lastFrameTimestamp;
 
-    public bool Initialized
-    {
-        get
-        {
+    public bool Initialized {
+        get {
             return webcamInitialized && imageInitialized;
         }
     }
 
-    public Matrix4x4 WebcamToWorldMatrix
-    {
-        get
-        {
+    public Matrix4x4 WebcamToWorldMatrix {
+        get {
             if (imageInitialized)
                 return webcamToWorldMatrix;
             else
@@ -46,10 +42,8 @@ public class HololensCameraUWP : MonoBehaviour
         }
     }
 
-    public Matrix4x4 ProjectionMatrix
-    {
-        get
-        {
+    public Matrix4x4 ProjectionMatrix {
+        get {
             if (imageInitialized)
                 return projectionMatrix;
             else
@@ -57,10 +51,8 @@ public class HololensCameraUWP : MonoBehaviour
         }
     }
 
-    public int Width
-    {
-        get
-        {
+    public int Width {
+        get {
             if (imageInitialized)
                 return width;
             else
@@ -68,10 +60,8 @@ public class HololensCameraUWP : MonoBehaviour
         }
     }
 
-    public int Height
-    {
-        get
-        {
+    public int Height {
+        get {
             if (imageInitialized)
                 return height;
             else
@@ -81,15 +71,13 @@ public class HololensCameraUWP : MonoBehaviour
 
 #if WINDOWS_UWP && !UNITY_EDITOR
     MediaFrameSourceGroup _holoLensMediaFrameSourceGroup = new MediaFrameSourceGroup(MediaFrameSourceGroupType.PhotoVideoCamera, new SpatialPerception(), null);
-
+    //MÉTODOS::
     public void Start()
     {
         InitializeMediaCapture();
     }
 
-    public void Update()
-    {
-    }
+    public void Update() { }
 
     public void OnApplicationFocus(bool hasFocus)
     {

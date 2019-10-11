@@ -14,6 +14,7 @@ using Windows.Graphics.Imaging;
 
 public class HoloFaceCore : MonoBehaviour
 {
+    //ATRIBUTOS::
     [Tooltip("Shows FPS when Debug mode is enabled.")]
     public Text FPSText;
     public Text BackendFaceTrackerTipText;
@@ -42,11 +43,9 @@ public class HoloFaceCore : MonoBehaviour
     bool useBackendManager = false;
     bool backendConnected = false;
 
-    private GestureRecognizer gestureRecognizer;
-
     int frameReportPeriod = 10;
     int frameCounter = 0;
-
+    //MÉTODOS::
     void Start()
     {
         itemManager = GetComponent<ItemManager>();
@@ -59,14 +58,12 @@ public class HoloFaceCore : MonoBehaviour
         localFaceTracker = new LocalFaceTracker(LocalTrackerNumberOfIters, LocalTrackerConfidenceThreshold);
         backendFaceTracker = new BackendFaceTracker(nLandmarks, BackendTrackerConfidenceThreshold, 43002, localFaceTracker);
 
-        gestureRecognizer.TappedEvent += ChangeDebug;
-
         if (PhraseRecognitionSystem.isSupported)
         {
             keywordCollection = new Dictionary<string, KeywordAction>();
 
-            //keywordCollection.Add("Show debug", ShowDebug);
-            //keywordCollection.Add("Hide debug", HideDebug);
+            keywordCollection.Add("Show debug", ShowDebug);
+            keywordCollection.Add("Hide debug", HideDebug);
             keywordCollection.Add("Computer", BackendProcessing);
             keywordCollection.Add("Local", LocalProcessing);
             keywordCollection.Add("Show face", ShowFace);
@@ -79,13 +76,6 @@ public class HoloFaceCore : MonoBehaviour
         if (FPSText != null)
             FPSText.text = "";
     }
-
-    void ChangeDebug(InteractionSourceKind source, int tapCount, Ray headRay)
-    {
-        if (showDebug) HideDebug();
-        else ShowDebug();
-    }
-
 #if WINDOWS_UWP
     void Update ()
     {
@@ -192,12 +182,8 @@ public class HoloFaceCore : MonoBehaviour
 
     private void FrameProcessed(float[] landmarks, Matrix4x4 webcamToWorldTransform, bool resetModelFitter)
     {
-        if (resetModelFitter)
-        {
-            faceRenderer.ResetFitter();
-        }
+        if (resetModelFitter) faceRenderer.ResetFitter();
         faceRenderer.UpdateHeadPose(landmarks, webcamToWorldTransform);
-        //itemManager.ProcessFaceExpressions(faceRenderer.BlendshapeWeights);
     }
 
     private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -205,9 +191,7 @@ public class HoloFaceCore : MonoBehaviour
         KeywordAction keywordAction;
 
         if (keywordCollection.TryGetValue(args.text, out keywordAction))
-        {
             keywordAction.Invoke();
-        }
     }
 
     void ShowDebug()
@@ -222,16 +206,12 @@ public class HoloFaceCore : MonoBehaviour
         showDebug = false;
         faceRenderer.HideDebug();
         itemManager.HideDebug();
-        if (FPSText != null)
-            FPSText.text = "";
+        if (FPSText != null) FPSText.text = "";
     }
 
     void BackendProcessing()
     {
-        if (!backendFaceTracker.Initialized)
-        {
-            backendFaceTracker.Initialize();
-        }
+        if (!backendFaceTracker.Initialized) backendFaceTracker.Initialize();
         if (!backendFaceTracker.Connected)
         {
             BackendFaceTrackerTipText.text = "Connect the backend processing client";
@@ -242,21 +222,12 @@ public class HoloFaceCore : MonoBehaviour
 
     void LocalProcessing()
     {
-        if (backendFaceTracker.Initialized)
-        {
-            backendFaceTracker.Close();
-        }
+        if (backendFaceTracker.Initialized) backendFaceTracker.Close();
         BackendFaceTrackerTipText.text = "";
         useBackendManager = false;
     }
 
-    void ShowFace()
-    {
-        itemManager.ShowFace();
-    }
+    void ShowFace() { itemManager.ShowFace(); }
 
-    void HideFace()
-    {
-        itemManager.HideFace();
-    }
+    void HideFace() { itemManager.HideFace(); }
 }

@@ -130,37 +130,23 @@ namespace FaceProcessing
     }
 }
 #else
-
 namespace FaceProcessing
 {
     //Empty classes provided so that the project compiles in Editor
     class Task<TResult>
     {
-        public Task()
-        {
-        }
+        public Task() { }
 
-        public TResult Result
-        {
-            get { return val; }
-        }
+        public TResult Result { get { return val; } }
 
         private TResult val;
     }
 
     class LocalFaceTracker
     {
-        public bool ResetModelFitter
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public bool ResetModelFitter { get { return true; } }
 
-        public LocalFaceTracker(int nIters, float confidenceThreshold)
-        {
-        }
+        public LocalFaceTracker(int nIters, float confidenceThreshold) { }
 
         public Task<float[]> GetLandmarks(byte[] imageData, int height, int width)
         {

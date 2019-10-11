@@ -10,12 +10,13 @@ using FaceProcessing;
 
 public class FaceRenderer : MonoBehaviour
 {
+    //ATRIBUTOS::
     [Tooltip("Distance between the pupils of the subject's face, 63mm is the human average.")]
-    public float InterPupilDistance = 0.063f; 
+    public float InterPupilDistance = 0.063f;
     [Tooltip("Specifies how far into the future the Kalman Filter should predict the head pose, seconds.")]
     public float KalmanPredictionTime = 0.12f;
     [Tooltip("A threshold, in meters, if a head moves by more than this much between two frames smoothing is not applied.")]
-    public float MaxDisplacementForSmoothing = 0.005f; 
+    public float MaxDisplacementForSmoothing = 0.005f;
     [Tooltip("A threshold, in degrees, if a head rotates by more than this much between two frames smoothing is not applied.")]
     public float MaxRotationForSmoothing = 4.0f;
     [Tooltip("Kalman filter parameter, see article for details.")]
@@ -31,7 +32,6 @@ public class FaceRenderer : MonoBehaviour
     public Mesh[] Blendshapes;
     public GameObject FaceMeshGameObject;
 
-
     SkinnedMeshRenderer skinnedRenderer;
     Mesh skinnedMesh;
     List<GameObject> cubes;
@@ -41,7 +41,7 @@ public class FaceRenderer : MonoBehaviour
     HololensCameraUWP webcam;
     float[] blendshapeWeights = new float[0];
     float lastUpdateTimestamp;
-    
+
     bool bShowDebug = false;
 
     float meshScale;
@@ -67,16 +67,9 @@ public class FaceRenderer : MonoBehaviour
                     84,  85,  88,  86,  87,
                     39 };
 
-
-    public float[] BlendshapeWeights
-    {
-        get
-        {
-            return blendshapeWeights;
-        }
-    }
-
-    void Start ()
+    public float[] BlendshapeWeights { get { return blendshapeWeights; } }
+    //MÉTODOS::
+    void Start()
     {
         meshScale = GetMeshScale();
 
@@ -102,8 +95,8 @@ public class FaceRenderer : MonoBehaviour
         landmarkPositions = new Vector3[NumberOfLandmarks];
         HideDebug();
     }
-	
-	void Update ()
+
+    void Update()
     {
         if (webcam.Initialized && !modelFitterInitialized)
         {
@@ -114,10 +107,7 @@ public class FaceRenderer : MonoBehaviour
         }
     }
 
-    public void SetWebcam(HololensCameraUWP webcam)
-    {
-        this.webcam = webcam;
-    }
+    public void SetWebcam(HololensCameraUWP webcam) { this.webcam = webcam; }
 
     public void UpdateHeadPose(float[] landmarks, Matrix4x4 webcamToWorldTransform)
     {
@@ -140,14 +130,11 @@ public class FaceRenderer : MonoBehaviour
         UpdateModelPose(modelPosition, modelRotation, webcamToWorldTransform);
 
         for (int i = 0; i < blendshapeWeights.Length; i++)
-        {
             skinnedRenderer.SetBlendShapeWeight(i, blendshapeWeights[i]);
-        }
 
         UpdateLandamarkPositions(landmarks, webcamToWorldTransform, (modelPosition - (Vector3)webcamToWorldTransform.GetColumn(3)).magnitude);
 
-        if (bShowDebug)
-            DrawLandmarks();
+        if (bShowDebug) DrawLandmarks();
         skinnedRenderer.gameObject.SetActive(true);
         lastUpdateTimestamp = Time.realtimeSinceStartup;
     }
@@ -245,21 +232,17 @@ public class FaceRenderer : MonoBehaviour
     private void DrawLandmarks()
     {
         for (int i = 0; i < landmarkPositions.Length; i++)
-        {
             cubes[i].transform.position = landmarkPositions[i];
-        }
     }
 
     private void UpdateModelPose(Vector3 position, Quaternion rotation, Matrix4x4 webcamToWorldTransform)
-    {        
+    {
         Quaternion oldRotation = FaceMeshGameObject.transform.rotation;
         Vector3 oldPosition = FaceMeshGameObject.transform.position;
 
         float timeSinceLastUpdate;
-        if (lastUpdateTimestamp < 0.0f)
-            timeSinceLastUpdate = 0.0f;
-        else
-            timeSinceLastUpdate = Time.realtimeSinceStartup - lastUpdateTimestamp;
+        if (lastUpdateTimestamp < 0.0f) timeSinceLastUpdate = 0.0f;
+        else timeSinceLastUpdate = Time.realtimeSinceStartup - lastUpdateTimestamp;
 
 #if WINDOWS_UWP
         xFilter.Step(position.x, timeSinceLastUpdate);
@@ -314,8 +297,7 @@ public class FaceRenderer : MonoBehaviour
 
             listBlendshapes.Add(new List<float>(blendshape));
         }
-
-
+        
 #if WINDOWS_UWP
         int w = webcam.Width;
         int h = webcam.Height;
@@ -342,10 +324,8 @@ public class FaceRenderer : MonoBehaviour
         int nVertices = NeutralFace.vertices.Length;
         Vector3[] vertices = new Vector3[nVertices];
         for (int i = 0; i < nVertices; i++)
-        {
             vertices[i] = meshScale * (NeutralFace.vertices[i]);
-        }
-
+        
         skinnedMesh = new Mesh();
         skinnedMesh.vertices = vertices;
         skinnedMesh.SetIndices(NeutralFace.GetIndices(0), MeshTopology.Triangles, 0);
@@ -357,9 +337,7 @@ public class FaceRenderer : MonoBehaviour
             Vector3[] deltaVertices = new Vector3[nVertices];
 
             for (int j = 0; j < nVertices; j++)
-            {
                 deltaVertices[j] = meshScale * (Blendshapes[i].vertices[j] - NeutralFace.vertices[j]);
-            }
 
             skinnedMesh.AddBlendShapeFrame("blendshape" + i, 1.0f, deltaVertices, dummyDeltas, dummyDeltas);
         }
@@ -371,18 +349,14 @@ public class FaceRenderer : MonoBehaviour
     public void ShowDebug()
     {
         for (int i = 0; i < cubes.Count; i++)
-        {
             cubes[i].SetActive(true);
-        }
         bShowDebug = true;
     }
 
     public void HideDebug()
     {
         for (int i = 0; i < cubes.Count; i++)
-        {
             cubes[i].SetActive(false);
-        }
         bShowDebug = false;
     }
 }

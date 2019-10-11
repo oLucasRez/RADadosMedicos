@@ -30,29 +30,9 @@ namespace FaceProcessing
         private bool bConnected = false;
         private bool bInitialized = false;
 
-        public bool ResetModelFitter
-        {
-            get
-            {
-                return bResetModelFitter;
-            }
-        }
-
-        public bool Connected
-        {
-            get
-            {
-                return bConnected;
-            }
-        }
-
-        public bool Initialized
-        {
-            get
-            {
-                return bInitialized;
-            }
-        }
+        public bool ResetModelFitter { get { return bResetModelFitter; } }
+        public bool Connected { get { return bConnected; } }
+        public bool Initialized { get { return bInitialized; } }
 
         public BackendFaceTracker(int nLandmarks, float confidenceThreshold, int portNumber, LocalFaceTracker localFaceTracker)
         {
@@ -198,62 +178,24 @@ namespace FaceProcessing
     }
 }
 #else
-
-//Empty class provided, so that the project compiles in the editor
 namespace FaceProcessing
 {
-    class BackendFaceTracker
-    {       
-        public bool ResetModelFitter
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public bool Initialized
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public bool Connected
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public BackendFaceTracker(int nLandmarks, float confidenceThreshold, int portNumber, LocalFaceTracker localFaceTracker)
-        {
-        }
-
-
-        public void Initialize()
-        {
-
-        }
-
-        public void Close()
-        {
-
-        }
-
-        public void ModelFitterReset()
-        {
-
-        }
-
+    class BackendFaceTracker//classe vazia para que o editor rode o programa sem problemas
+    {
+        //ATRIBUTOS::
+        public bool ResetModelFitter { get { return true; } }
+        public bool Initialized { get { return false; } }
+        public bool Connected { get { return false; } }
+        //CONSTRUTOR::
+        public BackendFaceTracker(int nLandmarks, float confidenceThreshold, int portNumber, LocalFaceTracker localFaceTracker) { }
+        //MÉTODOS::
+        public void Initialize() { }
+        public void Close() { }
+        public void ModelFitterReset() { }
         public Task<float[]> GetLandmarks(byte[] imageData, int height, int width)
         {
             return new Task<float[]>();
         }
-
     }
 }
-
 #endif
