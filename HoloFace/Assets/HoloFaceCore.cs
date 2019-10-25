@@ -24,22 +24,22 @@ public class HoloFaceCore : MonoBehaviour
     public int nLandmarks = 51;
 
     HololensCameraUWP webcam;
-    LocalFaceTracker localFaceTracker;
-    BackendFaceTracker backendFaceTracker;
-    FaceRenderer faceRenderer;
+    //LocalFaceTracker localFaceTracker;
+    //BackendFaceTracker backendFaceTracker;
+    //FaceRenderer faceRenderer;
     ItemManager itemManager;
-    
+
     int nProcessing = 0;
     float imageProcessingStartTime = 0.0f;
     float elapsedTime = 0.0f;
     float lastTipTextUpdateTime = 0.0f;
     Queue<Action> executeOnMainThread = new Queue<Action>();
 
-    KeywordRecognizer keywordRecognizer;  
+    KeywordRecognizer keywordRecognizer;
     delegate void KeywordAction();
     Dictionary<string, KeywordAction> keywordCollection;
 
-    bool showDebug = false;
+    bool showDebug = true;
     bool useBackendManager = false;
     bool backendConnected = false;
 
@@ -52,22 +52,20 @@ public class HoloFaceCore : MonoBehaviour
 
         webcam = GetComponent<HololensCameraUWP>();
 
-        faceRenderer = GetComponent<FaceRenderer>();
-        faceRenderer.SetWebcam(webcam);
+        //faceRenderer = GetComponent<FaceRenderer>();
+        //faceRenderer.SetWebcam(webcam);
 
-        localFaceTracker = new LocalFaceTracker(LocalTrackerNumberOfIters, LocalTrackerConfidenceThreshold);
-        backendFaceTracker = new BackendFaceTracker(nLandmarks, BackendTrackerConfidenceThreshold, 43002, localFaceTracker);
+        //localFaceTracker = new LocalFaceTracker(LocalTrackerNumberOfIters, LocalTrackerConfidenceThreshold);
+        //backendFaceTracker = new BackendFaceTracker(nLandmarks, BackendTrackerConfidenceThreshold, 43002, localFaceTracker);
 
         if (PhraseRecognitionSystem.isSupported)
         {
             keywordCollection = new Dictionary<string, KeywordAction>();
 
-            keywordCollection.Add("Show debug", ShowDebug);
-            keywordCollection.Add("Hide debug", HideDebug);
-            keywordCollection.Add("Computer", BackendProcessing);
+            keywordCollection.Add("Show Debug", ShowDebug);
+            keywordCollection.Add("Bacon", HideDebug);
+            //keywordCollection.Add("Computer", BackendProcessing);
             keywordCollection.Add("Local", LocalProcessing);
-            keywordCollection.Add("Show face", ShowFace);
-            keywordCollection.Add("Hide face", HideFace);
 
             keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
             keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
@@ -97,17 +95,17 @@ public class HoloFaceCore : MonoBehaviour
                 frameCounter++;
             }
         }
-
+        
         if (nProcessing < 1)
         {
             SoftwareBitmap image = webcam.GetImage();
             if (image != null)
             {
                 Matrix4x4 webcamToWorldTransform = webcam.WebcamToWorldMatrix;
-                float[] landmarkProjections = faceRenderer.GetLandmarkProjections(webcamToWorldTransform);
+                //float[] landmarkprojections = facerenderer.getlandmarkprojections(webcamtoworldtransform);
 
                 nProcessing++;
-                Task.Run(() => ProcessFrame(image, landmarkProjections, webcamToWorldTransform));
+                Task.Run(() => ProcessFrame(image/*, landmarkProjections*/, webcamToWorldTransform));
             }
         }
 
@@ -115,13 +113,14 @@ public class HoloFaceCore : MonoBehaviour
             BackendFaceTrackerTipText.text = "";
     }
 
-    private async Task ProcessFrame(SoftwareBitmap image, float[] landmarkInits, Matrix4x4 webcamToWorldTransform)
+    //usado apenas em Update()
+    private async Task ProcessFrame(SoftwareBitmap image/*, float[] landmarkInits*/, Matrix4x4 webcamToWorldTransform)
     {
         bool resetModelFitter = true;
         float[] landmarks = null;
         if (useBackendManager)
         {
-            if (backendFaceTracker.Connected)
+            if (true/*backendFaceTracker.Connected*/)
             {
                 if (!backendConnected)
                 {
@@ -133,9 +132,9 @@ public class HoloFaceCore : MonoBehaviour
                     });
                 }
 
-                landmarks = await backendFaceTracker.GetLandmarks(image, landmarkInits);
-                resetModelFitter = backendFaceTracker.ResetModelFitter;
-                backendFaceTracker.ModelFitterReset();
+                //landmarks = await backendFaceTracker.GetLandmarks(image, landmarkInits);
+                //resetModelFitter = backendFaceTracker.ResetModelFitter;
+                //backendFaceTracker.ModelFitterReset();
             }
             else
             {
@@ -149,16 +148,16 @@ public class HoloFaceCore : MonoBehaviour
                     });
                 }
 
-                landmarks = await localFaceTracker.GetLandmarks(image, landmarkInits);
-                resetModelFitter = localFaceTracker.ResetModelFitter;
-                localFaceTracker.ResetModelFitter = false;
+                //landmarks = await localFaceTracker.GetLandmarks(image, landmarkInits);
+                //resetModelFitter = localFaceTracker.ResetModelFitter;
+                //localFaceTracker.ResetModelFitter = false;
             }
         }
         else if (!useBackendManager)
         {
-            landmarks = await localFaceTracker.GetLandmarks(image, landmarkInits);
-            resetModelFitter = localFaceTracker.ResetModelFitter;
-            localFaceTracker.ResetModelFitter = false;
+            //landmarks = await localFaceTracker.GetLandmarks(image, landmarkInits);
+            //resetModelFitter = localFaceTracker.ResetModelFitter;
+            //localFaceTracker.ResetModelFitter = false;
         }
 
         if (landmarks != null)
@@ -172,7 +171,7 @@ public class HoloFaceCore : MonoBehaviour
         {
             executeOnMainThread.Enqueue(() =>
             {
-                faceRenderer.ResetFitter();
+                //faceRenderer.ResetFitter();
             });
         }
 
@@ -180,10 +179,11 @@ public class HoloFaceCore : MonoBehaviour
     }
 #endif
 
+    //usado apenas em ProcessFrame()
     private void FrameProcessed(float[] landmarks, Matrix4x4 webcamToWorldTransform, bool resetModelFitter)
     {
-        if (resetModelFitter) faceRenderer.ResetFitter();
-        faceRenderer.UpdateHeadPose(landmarks, webcamToWorldTransform);
+        //if (resetModelFitter) faceRenderer.ResetFitter();
+        //faceRenderer.UpdateHeadPose(landmarks, webcamToWorldTransform);
     }
 
     private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -197,37 +197,38 @@ public class HoloFaceCore : MonoBehaviour
     void ShowDebug()
     {
         showDebug = true;
-        faceRenderer.ShowDebug();
+        //faceRenderer.ShowDebug();
         itemManager.ShowDebug();
     }
 
     void HideDebug()
     {
         showDebug = false;
-        faceRenderer.HideDebug();
+        //faceRenderer.HideDebug();
         itemManager.HideDebug();
         if (FPSText != null) FPSText.text = "";
     }
 
+    //usado apenas em Start()
     void BackendProcessing()
     {
-        if (!backendFaceTracker.Initialized) backendFaceTracker.Initialize();
-        if (!backendFaceTracker.Connected)
-        {
-            BackendFaceTrackerTipText.text = "Connect the backend processing client";
-            lastTipTextUpdateTime = Time.time;
-        }
+        //if (!backendFaceTracker.Initialized) backendFaceTracker.Initialize();
+        //if (!backendFaceTracker.Connected)
+        //{
+        //    BackendFaceTrackerTipText.text = "Connect the backend processing client";
+        //    lastTipTextUpdateTime = Time.time;
+        //}
         useBackendManager = true;
     }
 
     void LocalProcessing()
     {
-        if (backendFaceTracker.Initialized) backendFaceTracker.Close();
+        //if (backendFaceTracker.Initialized) backendFaceTracker.Close();
         BackendFaceTrackerTipText.text = "";
         useBackendManager = false;
     }
 
-    void ShowFace() { itemManager.ShowFace(); }
+    //void ShowFace() { itemManager.ShowFace(); }
 
-    void HideFace() { itemManager.HideFace(); }
+    //void HideFace() { itemManager.HideFace(); }
 }

@@ -15,6 +15,7 @@ public class ItemManager : MonoBehaviour//exibe ou esconde a malha da face e o m
     bool showingFace = false;
     public bool ShowingFace { get { return showingFace; } }
 
+    private UnityEngine.XR.WSA.Input.GestureRecognizer gestureRecognizer;
     private Transform transf;
     //MÉTODOS::
     void Awake()
@@ -28,12 +29,26 @@ public class ItemManager : MonoBehaviour//exibe ou esconde a malha da face e o m
                 break;
             }
         }
-#if WINDOWS_UWP
-        HideFace();
-#else
-        ShowFace();
-#endif
+
+        gestureRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
+        gestureRecognizer.SetRecognizableGestures(UnityEngine.XR.WSA.Input.GestureSettings.Tap);
+        gestureRecognizer.TappedEvent += HandleFace;
+
+        gestureRecognizer.StartCapturingGestures();
+        //#if WINDOWS_UWP
+        //        HideFace();
+        //#else
+        //        ShowFace(UnityEngine.XR.WSA.Input.InteractionSourceKind source, int tapCount, Ray headRay);
+        //#endif
         transf.gameObject.SetActive(true);
+    }
+
+    bool face = false;
+    public void HandleFace(UnityEngine.XR.WSA.Input.InteractionSourceKind source, int tapCount, Ray headRay)
+    {
+        if (face) ShowFace();
+        else HideFace();
+        face = !face;
     }
 
     public void ShowFace()
