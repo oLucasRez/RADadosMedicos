@@ -48,6 +48,7 @@ public class HoloFaceCore : MonoBehaviour
     //MÉTODOS::
     void Start()
     {
+        Debug.Log(name + " eu tenho um chamado");
         itemManager = GetComponent<ItemManager>();
 
         webcam = GetComponent<HololensCameraUWP>();

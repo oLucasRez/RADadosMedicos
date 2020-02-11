@@ -584,7 +584,7 @@ PlayerSettings:
   metroCertificateNotAfter: 00324c7e399cd601
   metroApplicationDescription: FaceSwapHL
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: HoloFace
   metroCommandLineArgsFile: 
   metroTileShowName: 0
   metroMediumTileShowName: 0

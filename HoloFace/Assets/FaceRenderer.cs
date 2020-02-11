@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 #if WINDOWS_UWP
 using FaceProcessing;
@@ -31,6 +32,8 @@ public class FaceRenderer : MonoBehaviour
     public Mesh NeutralFace;
     public Mesh[] Blendshapes;
     public GameObject FaceMeshGameObject;
+
+    public Text Ka;
 
     SkinnedMeshRenderer skinnedRenderer;
     Mesh skinnedMesh;
@@ -297,7 +300,7 @@ public class FaceRenderer : MonoBehaviour
 
             listBlendshapes.Add(new List<float>(blendshape));
         }
-        
+
 #if WINDOWS_UWP
         int w = webcam.Width;
         int h = webcam.Height;
@@ -315,17 +318,22 @@ public class FaceRenderer : MonoBehaviour
         K.m12 = h * (normK.m12 + 1) / 2;
         K.m22 = 1;
 
+        Ka.text = "00=" + K.m00 + " 01=" + K.m01 + " 02=" + K.m02 + " 03=" + K.m03 + "\n10="
+                + K.m10 + " 11=" + K.m11 + " 12=" + K.m12 + " 13=" + K.m13 + "\n20="
+                + K.m20 + " 21=" + K.m21 + " 22=" + K.m22 + " 23=" + K.m23 + "\n30="
+                + K.m30 + " 31=" + K.m31 + " 32=" + K.m32 + " 33=" + K.m33 + "\n";
+
         modelFitter = new ModelFitter(floatMean3DShape, listBlendshapes, idxs2D, idxs3D, arrayK);
 #endif
     }
 
-    void BuildMesh()
+    void BuildMesh()//monta o CANDIDE-3 na Unity
     {
         int nVertices = NeutralFace.vertices.Length;
         Vector3[] vertices = new Vector3[nVertices];
         for (int i = 0; i < nVertices; i++)
             vertices[i] = meshScale * (NeutralFace.vertices[i]);
-        
+
         skinnedMesh = new Mesh();
         skinnedMesh.vertices = vertices;
         skinnedMesh.SetIndices(NeutralFace.GetIndices(0), MeshTopology.Triangles, 0);
