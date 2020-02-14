@@ -48,7 +48,6 @@ public class HoloFaceCore : MonoBehaviour
     //MÉTODOS::
     void Start()
     {
-        Debug.Log(name + " eu tenho um chamado");
         itemManager = GetComponent<ItemManager>();
 
         webcam = GetComponent<HololensCameraUWP>();
@@ -80,40 +79,40 @@ public class HoloFaceCore : MonoBehaviour
 #if WINDOWS_UWP
     void Update ()
     {
-        while (executeOnMainThread.Count > 0)
-        {
-            Action nextAction = executeOnMainThread.Dequeue();
-            nextAction.Invoke();
+        //while (executeOnMainThread.Count > 0)
+        //{
+        //    Action nextAction = executeOnMainThread.Dequeue();
+        //    nextAction.Invoke();
 
-            if (executeOnMainThread.Count == 0)
-            {
-                elapsedTime += Time.realtimeSinceStartup - imageProcessingStartTime;
-                if (frameCounter % frameReportPeriod == 0)
-                {
-                    if (showDebug && FPSText != null)
-                        FPSText.text = (1 / (elapsedTime / frameReportPeriod)).ToString();
-                    elapsedTime = 0;
-                }
-                imageProcessingStartTime = Time.realtimeSinceStartup;
-                frameCounter++;
-            }
-        }
+        //    if (executeOnMainThread.Count == 0)
+        //    {
+        //        elapsedTime += Time.realtimeSinceStartup - imageProcessingStartTime;
+        //        if (frameCounter % frameReportPeriod == 0)
+        //        {
+        //            if (showDebug && FPSText != null)
+        //                FPSText.text = (1 / (elapsedTime / frameReportPeriod)).ToString();
+        //            elapsedTime = 0;
+        //        }
+        //        imageProcessingStartTime = Time.realtimeSinceStartup;
+        //        frameCounter++;
+        //    }
+        //}
 
-        if (nProcessing < 1)
-        {
-            SoftwareBitmap image = webcam.GetImage();
-            if (image != null)
-            {
-                Matrix4x4 webcamToWorldTransform = webcam.WebcamToWorldMatrix;
-                float[] landmarkProjections = faceRenderer.GetLandmarkProjections(webcamToWorldTransform);
+        //if (nProcessing < 1)
+        //{
+        //    SoftwareBitmap image = webcam.GetImage();
+        //    if (image != null)
+        //    {
+        //        Matrix4x4 webcamToWorldTransform = webcam.WebcamToWorldMatrix;
+        //        float[] landmarkProjections = faceRenderer.GetLandmarkProjections(webcamToWorldTransform);
 
-                nProcessing++;
-                Task.Run(() => ProcessFrame(image, landmarkProjections, webcamToWorldTransform));
-            }
-        }
+        //        nProcessing++;
+        //        Task.Run(() => ProcessFrame(image, landmarkProjections, webcamToWorldTransform));
+        //    }
+        //}
 
-        if (Time.time > lastTipTextUpdateTime + 3.0f)
-            BackendFaceTrackerTipText.text = "";
+        //if (Time.time > lastTipTextUpdateTime + 3.0f)
+        //    BackendFaceTrackerTipText.text = "";
     }
 
     private async Task ProcessFrame(SoftwareBitmap image, float[] landmarkInits, Matrix4x4 webcamToWorldTransform)
