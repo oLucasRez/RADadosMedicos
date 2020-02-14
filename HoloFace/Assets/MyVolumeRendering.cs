@@ -24,20 +24,34 @@ public class MyVolumeRendering : MonoBehaviour
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.filterMode = FilterMode.Bilinear;
         texture.anisoLevel = 0;
+
+        //TextAsset asset = Resources.Load<TextAsset>("SlicesBytes/-0001");
+        //Debug.Log(asset);
+
         for (int i = 0; i < size; i++)
         {
-            string path = string.Format(Application.dataPath + "/Resources/Slices/-{0:D4}.pgm", i + 1);
-            using (var stream = new FileStream(path, FileMode.Open))
+            //string path = string.Format(Application.dataPath + "/Resources/Slices/-{0:D4}.pgm", i + 1);
+            TextAsset asset = Resources.Load<TextAsset>(string.Format("SlicesBytes/-{0:D4}", i + 1));
+            Stream s = new MemoryStream(asset.bytes);
+            BinaryReader br = new BinaryReader(s);
+            for (int j = 0; j < size * size; j++)
             {
-                for (int j = 0; j < size * size; j++)
-                {
-                    if (i * size + j == max) break;
-                    int byteValue = stream.ReadByte();
-                    float f = byteValue * inv;
-                    colors[i * size * size + j] = new Color(f, f, f, f);
-                }
+                if (i * size + j == max) break;
+                int byteValue = br.ReadByte();
+                float f = byteValue * inv;
+                colors[i * size * size + j] = new Color(f, f, f, f);
             }
-        }
+                //using (var stream = new FileStream(path, FileMode.Open))
+                //{
+                //    for (int j = 0; j < size * size; j++)
+                //    {
+                //        if (i * size + j == max) break;
+                //        int byteValue = stream.ReadByte();
+                //        float f = byteValue * inv;
+                //        colors[i * size * size + j] = new Color(f, f, f, f);
+                //    }
+                //}
+            }
         texture.SetPixels(colors);
         texture.Apply();
     }
