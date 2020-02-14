@@ -24,11 +24,9 @@ public class MyVolumeRendering : MonoBehaviour
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.filterMode = FilterMode.Bilinear;
         texture.anisoLevel = 0;
-
         for (int i = 0; i < size; i++)
         {
-            string path = string.Format("Assets/Textures/Slices/-{0:D4}.pgm", i + 1);
-            //var pgmfile = Resources.Load(string.Format("Slices/-{0:D4}.pgm", i + 1));
+            string path = string.Format(Application.dataPath + "/Resources/Slices/-{0:D4}.pgm", i + 1);
             using (var stream = new FileStream(path, FileMode.Open))
             {
                 for (int j = 0; j < size * size; j++)
@@ -40,7 +38,6 @@ public class MyVolumeRendering : MonoBehaviour
                 }
             }
         }
-
         texture.SetPixels(colors);
         texture.Apply();
     }

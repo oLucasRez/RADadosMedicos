@@ -27,7 +27,8 @@
 			#include "./VolumeRendering.cginc"
 			#pragma vertex vert
 			#pragma fragment frag
-			#pragma only_renderers d3d11
+			#pragma target 4.0
+			//#pragma only_renderers d3d11
 
 			ENDCG
 		}
