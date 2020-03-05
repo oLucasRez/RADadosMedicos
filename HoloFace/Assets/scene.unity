@@ -243,23 +243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf7442d53edb9a43934c787c8b8e246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FPSText: {fileID: 1638702642}
-  BackendFaceTrackerTipText: {fileID: 1325655109}
-  LocalTrackerConfidenceThreshold: 900
-  BackendTrackerConfidenceThreshold: 0.1
-  LocalTrackerNumberOfIters: 3
-  nLandmarks: 51
-  webcam: {fileID: 0}
-  faceRenderer: {fileID: 0}
-  nProcessing: 0
-  imageProcessingStartTime: 0
-  elapsedTime: 0
-  lastTipTextUpdateTime: 0
-  showDebug: 0
-  useBackendManager: 0
-  backendConnected: 0
-  frameReportPeriod: 10
-  frameCounter: 0
 --- !u!4 &480084806
 Transform:
   m_ObjectHideFlags: 0
@@ -297,23 +280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9f4059175b3834c925c455ef940f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InterPupilDistance: 0.063
-  KalmanPredictionTime: 0.12
-  MaxDisplacementForSmoothing: 0.005
-  MaxRotationForSmoothing: 4
-  SigmaA: 10
-  SigmaM: 0.01
-  DecayRate: 0.1
-  NumberOfLandmarks: 51
-  NeutralFace: {fileID: 4300000, guid: 92da10132d1265044b6b6adbb28be30a, type: 3}
-  Blendshapes:
-  - {fileID: 4300000, guid: d11feb9cd560b5a46ac5738ce2776445, type: 3}
-  - {fileID: 4300000, guid: 9a22794484f1e9a40bf79db1eafe4c5b, type: 3}
-  - {fileID: 4300000, guid: daa2dce11ea1d964eb306ca67cbc2c2a, type: 3}
-  - {fileID: 4300000, guid: 77b75a2804c292e499d3ee0ab58f0ca3, type: 3}
-  - {fileID: 4300000, guid: 165d0e7a60ac8b446a3c8b08823a0904, type: 3}
-  FaceMeshGameObject: {fileID: 2139494221}
-  Ka: {fileID: 583906016}
 --- !u!114 &480084810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,8 +291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e1c23c055a86a947b9f7ee5624af8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttributeText: {fileID: 873195250}
-  FaceMesh: {fileID: 2139494221}
 --- !u!1 &583906014
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +522,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 959433555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.896}
+  m_LocalPosition: {x: 0, y: 0, z: -0.638}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
