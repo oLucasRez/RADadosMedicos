@@ -130,11 +130,9 @@ namespace FaceProcessing
     }
 }
 #else
-namespace FaceProcessing
-{
+namespace FaceProcessing {
     //Empty classes provided so that the project compiles in Editor
-    class Task<TResult>
-    {
+    class Task<TResult> {
         public Task() { }
 
         public TResult Result { get { return val; } }
@@ -142,8 +140,7 @@ namespace FaceProcessing
         private TResult val;
     }
 
-    class LocalFaceTracker
-    {
+    class LocalFaceTracker {
         public bool ResetModelFitter { get { return true; } }
 
         public LocalFaceTracker(int nIters, float confidenceThreshold) { }
